@@ -56,6 +56,18 @@ def run_lint(lint_path: Union[str, Path] = ".") -> None:
     )
 
 
+def run_typechecking(typecheck_path: Union[str, Path] = ".") -> None:
+    """
+    Run the typechecker.
+    """
+
+    _run_cmd(
+        "mypy",
+        "Typechecking",
+        typecheck_path,
+    )
+
+
 def run_all() -> None:
     """
     Run all the clean-up tools in sequence.
@@ -63,3 +75,4 @@ def run_all() -> None:
 
     run_import_sort()
     run_lint()
+    run_typechecking()
