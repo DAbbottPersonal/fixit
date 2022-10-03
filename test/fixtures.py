@@ -7,6 +7,38 @@ import pytest
 
 
 @pytest.fixture
+def unsorted_test_python_file(tmp_path):
+    d = tmp_path / "import"
+    d.mkdir(exist_ok=True)
+    p = d / "unsorted.py"
+    p.write_text(
+        """
+import pillow
+import abcdefg
+import numpy
+import pandas
+"""
+    )
+    return p
+
+
+@pytest.fixture
+def sorted_test_python_file(tmp_path):
+    d = tmp_path / "import"
+    d.mkdir(exist_ok=True)
+    p = d / "sorted.py"
+    p.write_text(
+        """
+import abcdefg
+import numpy
+import pandas
+import pillow
+"""
+    )
+    return p
+
+
+@pytest.fixture
 def unlinted_test_python_file(tmp_path):
     d = tmp_path / "lint"
     d.mkdir(exist_ok=True)
@@ -24,7 +56,6 @@ if 1 > 0:
 "Final line!"
 """
     )
-    print(p)
     return p
 
 

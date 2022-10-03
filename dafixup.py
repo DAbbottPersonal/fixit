@@ -12,9 +12,29 @@ logging.basicConfig(format=FORMAT)
 logger = logging.getLogger("dafixup")
 
 
+def run_import_sort(sort_path: Union[str, Path] = ".") -> None:
+    """
+    Run the import sorter.
+    """
+
+    sort_path = (
+        sort_path.absolute()
+        if isinstance(sort_path, Path)
+        else Path(sort_path).absolute()
+    )
+    cmd = [
+        "isort",
+        str(sort_path),
+    ]
+    cmd_str = " ".join(cmd)
+    logger.warning(f"Start Import Sorter: %s", cmd_str)
+    subprocess.call(cmd, shell=True)
+    logger.warning(f"Finish Import Sorter: %s", cmd_str)
+
+
 def run_lint(lint_path: Union[str, Path] = ".") -> None:
     """
-    Run all the linter.
+    Run the linter.
     """
 
     lint_path = (
@@ -37,4 +57,5 @@ def run_all() -> None:
     Run all the clean-up tools in sequence.
     """
 
+    run_import_sort()
     run_lint()
