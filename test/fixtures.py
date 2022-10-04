@@ -81,3 +81,31 @@ if 1 > 0:
 """
     )
     return p
+
+
+@pytest.fixture
+def untypechecked_test_python_file(tmp_path):
+    d = tmp_path / "typechecked"
+    d.mkdir(exist_ok=True)
+    p = d / "unchecked.py"
+    p.write_text(
+        """
+def tc(x: int = ""):
+    pass
+"""
+    )
+    return p
+
+
+@pytest.fixture
+def typechecked_test_python_file(tmp_path):
+    d = tmp_path / "typechecked"
+    d.mkdir(exist_ok=True)
+    p = d / "checked.py"
+    p.write_text(
+        """
+def tc(x: str = ""):
+    pass
+"""
+    )
+    return p

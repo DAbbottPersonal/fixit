@@ -5,7 +5,8 @@ This script will run a suite of common code clean-up utilities
 import logging
 import subprocess
 from pathlib import Path
-from typing import Union
+from sys import stdout
+from typing import List, Union
 
 FORMAT = "%(asctime)s %(message)s"
 logging.basicConfig(format=FORMAT)
@@ -14,57 +15,68 @@ logger = logging.getLogger("dafixup")
 
 def _run_cmd(
     pkg_to_run: str,
+    pkg_options: List[str] = None,
     pkg_desc: str = "",
     path: Union[str, Path] = ".",
-) -> None:
+) -> str:
     """
     Command to run a package.
     """
 
     path = path.absolute() if isinstance(path, Path) else Path(path).absolute()
-    cmd = [
-        pkg_to_run,
-        str(path),
-    ]
+    cmd = pkg_options if pkg_options else []
+    cmd.insert(0, pkg_to_run)
+    cmd.append(str(path))
+
     cmd_str = " ".join(cmd)
-    logger.warning(f"Start %s: %s", pkg_desc, cmd_str)
-    subprocess.call(cmd, shell=True)
-    logger.warning(f"Finish %s", pkg_desc)
+    logger.warning("Start %s: %s", pkg_desc, cmd_str)
+    std_out = subprocess.run(cmd, shell=True, capture_output=True)
+    logger.warning(
+        "Finish %s with output and error: \n%s\n%s",
+        pkg_desc,
+        std_out.stdout.decode(),
+        std_out.stderr.decode(),
+    )
+    return std_out.stdout.decode()
 
 
-def run_import_sort(sort_path: Union[str, Path] = ".") -> None:
+def run_import_sort(sort_path: Union[str, Path] = ".") -> str:
     """
     Run the import sorter.
     """
 
-    _run_cmd(
-        "isort",
-        "Import Sorter",
-        sort_path,
+    return _run_cmd(
+        pkg_to_run="isort",
+        pkg_desc="Import Sorter",
+        path=sort_path,
     )
 
 
-def run_lint(lint_path: Union[str, Path] = ".") -> None:
+def run_lint(lint_path: Union[str, Path] = ".") -> str:
     """
     Run the linter.
     """
 
-    _run_cmd(
-        "black",
-        "Linter",
-        lint_path,
+    return _run_cmd(
+        pkg_to_run="black",
+        pkg_desc="Linter",
+        path=lint_path,
     )
 
 
-def run_typechecking(typecheck_path: Union[str, Path] = ".") -> None:
+def run_typechecking(typecheck_path: Union[str, Path] = ".") -> str:
     """
     Run the typechecker.
     """
 
-    _run_cmd(
-        "mypy",
-        "Typechecking",
-        typecheck_path,
+    return _run_cmd(
+        pkg_to_run="mypy",
+        pkg_options=[
+            "--explicit-package-bases",
+            "--namespace-packages",
+        ],
+        pkg_desc="Typechecking",
+        path=typecheck_path,
     )
 
 
