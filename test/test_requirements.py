@@ -14,10 +14,10 @@ def test_requirement_file_generation(file_with_imports):
     run_requirement_generation(d)
     r = d / "requirements.txt"
     with open(r) as f:
-        n=0
+        n = 0
         for i, l in enumerate(f):
-            n=i+1
-            print(50*"-")
+            n = i + 1
+            print(50 * "-")
             print(l)
             if i == 2:
                 assert "numpy" in l
