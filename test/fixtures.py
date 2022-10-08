@@ -109,3 +109,18 @@ def tc(x: str = ""):
 """
     )
     return p
+
+
+@pytest.fixture
+def file_with_imports(tmp_path):
+    d = tmp_path / "reqs"
+    d.mkdir(exist_ok=True)
+    p = d / "test.py"
+    p.write_text(
+        """
+import pillow
+import numpy
+import pandas
+"""
+    )
+    return d
