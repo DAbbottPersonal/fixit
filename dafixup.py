@@ -69,9 +69,13 @@ def run_requirement_generation(req_path: Union[str, Path] = ".") -> str:
     Run the code to make requirements.txt.
     """
 
+    req_path = Path(req_path) if isinstance(req_path, str) else req_path
     return _run_cmd(
         pkg_to_run="pigar",
         pkg_options=[
+            "-y",
+            "-p",
+            str(req_path / "requirements.txt"),
             "-P",
         ],
         pkg_desc="Requirement Generation",
