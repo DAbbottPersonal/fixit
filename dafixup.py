@@ -64,6 +64,21 @@ def run_lint(lint_path: Union[str, Path] = ".") -> str:
     )
 
 
+def run_requirement_generation(req_path: Union[str, Path] = ".") -> str:
+    """
+    Run the code to make requirements.txt.
+    """
+
+    return _run_cmd(
+        pkg_to_run="pigar",
+        pkg_options=[
+            "-P",
+        ],
+        pkg_desc="Requirement Generation",
+        path=req_path,
+    )
+
+
 def run_typechecking(typecheck_path: Union[str, Path] = ".") -> str:
     """
     Run the typechecker.
@@ -87,4 +102,5 @@ def run_all() -> None:
 
     run_import_sort()
     run_lint()
+    run_requirement_generation()
     run_typechecking()
