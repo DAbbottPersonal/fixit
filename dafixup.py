@@ -13,6 +13,15 @@ logging.basicConfig(format=FORMAT)
 logger = logging.getLogger("dafixup")
 
 
+def path_abs(path: Union[str, Path]) -> Path:
+    """
+    Return an absolute path from a str or Path.
+    """
+
+    p = path if isinstance(path, Path) else Path(path)
+    return p.absolute()
+
+
 def _run_cmd(
     pkg_to_run: str,
     pkg_options: List[str] = None,
@@ -23,7 +32,7 @@ def _run_cmd(
     Command to run a package.
     """
 
-    path = path.absolute() if isinstance(path, Path) else Path(path).absolute()
+    path = path_abs(path)
     cmd = pkg_options if pkg_options else []
     cmd.insert(0, pkg_to_run)
     cmd.append(str(path))
@@ -69,7 +78,7 @@ def run_requirement_generation(req_path: Union[str, Path] = ".") -> str:
     Run the code to make requirements.txt.
     """
 
-    req_path = Path(req_path) if isinstance(req_path, str) else req_path
+    req_path = path_abs(req_path)
     return _run_cmd(
         pkg_to_run="pigar",
         pkg_options=[
