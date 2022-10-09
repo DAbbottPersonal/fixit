@@ -5,11 +5,6 @@ dafixup Package Installation Unit Tests
 """
 
 
-from unittest import mock
-
-import pytest
-
-
 def import_checker():
     try:
         import dafixup
