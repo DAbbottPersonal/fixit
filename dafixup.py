@@ -13,6 +13,15 @@ logging.basicConfig(format=FORMAT)
 logger = logging.getLogger("dafixup")
 
 
+def path_abs(path_: Union[str, Path]) -> Path:
+    """
+    Return an absolute path from a str or Path.
+    """
+
+    p = path_ if isinstance(path_, Path) else Path(path_)
+    return p.absolute()
+
+
 def _run_cmd(
     pkg_to_run: str,
     pkg_options: List[str] = None,
@@ -23,7 +32,7 @@ def _run_cmd(
     Command to run a package.
     """
 
-    path = path.absolute() if isinstance(path, Path) else Path(path).absolute()
+    path = path_abs(path)
     cmd = pkg_options if pkg_options else []
     cmd.insert(0, pkg_to_run)
     cmd.append(str(path))
@@ -40,7 +49,7 @@ def _run_cmd(
     return std_out.stdout.decode()
 
 
-def run_import_sort(sort_path: Union[str, Path] = ".") -> str:
+def run_import_sort(path_: Union[str, Path] = ".") -> str:
     """
     Run the import sorter.
     """
@@ -48,11 +57,11 @@ def run_import_sort(sort_path: Union[str, Path] = ".") -> str:
     return _run_cmd(
         pkg_to_run="isort",
         pkg_desc="Import Sorter",
-        path=sort_path,
+        path=path_,
     )
 
 
-def run_lint(lint_path: Union[str, Path] = ".") -> str:
+def run_lint(path_: Union[str, Path] = ".") -> str:
     """
     Run the linter.
     """
@@ -60,30 +69,30 @@ def run_lint(lint_path: Union[str, Path] = ".") -> str:
     return _run_cmd(
         pkg_to_run="black",
         pkg_desc="Linter",
-        path=lint_path,
+        path=path_,
     )
 
 
-def run_requirement_generation(req_path: Union[str, Path] = ".") -> str:
+def run_requirement_generation(path_: Union[str, Path] = ".") -> str:
     """
     Run the code to make requirements.txt.
     """
 
-    req_path = Path(req_path) if isinstance(req_path, str) else req_path
+    path_ = path_abs(path_)
     return _run_cmd(
         pkg_to_run="pigar",
         pkg_options=[
             "-y",
             "-p",
-            str(req_path / "requirements.txt"),
+            str(path_ / "requirements.txt"),
             "-P",
         ],
         pkg_desc="Requirement Generation",
-        path=req_path,
+        path=path_,
     )
 
 
-def run_typechecking(typecheck_path: Union[str, Path] = ".") -> str:
+def run_typechecking(path_: Union[str, Path] = ".") -> str:
     """
     Run the typechecker.
     """
@@ -95,7 +104,7 @@ def run_typechecking(typecheck_path: Union[str, Path] = ".") -> str:
             "--namespace-packages",
         ],
         pkg_desc="Typechecking",
-        path=typecheck_path,
+        path=path_,
     )
 
 
